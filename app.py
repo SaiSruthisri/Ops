@@ -34,7 +34,7 @@ creds_dict = json.loads(creds_json)
 creds = service_account.Credentials.from_service_account_info(creds_dict)
 db = firestore.Client(credentials=creds, project=FIREBASE_PROJECT_ID)
 # ================== FIRESTORE ==================
-db = firestore.Client(project=FIREBASE_PROJECT_ID)
+# db = firestore.Client(project=FIREBASE_PROJECT_ID)
 
 def format_user_updates(updates: list) -> str:
     if not updates:

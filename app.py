@@ -10,10 +10,16 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 # ================== ENV SETUP ==================
-load_dotenv()
-GOOGLE_CREDS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_CREDS
+# load_dotenv()
+# GOOGLE_CREDS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_CREDS
+import google.auth
+from google.oauth2 import service_account
 
+creds_json = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON")
+creds_dict = json.loads(creds_json)
+creds = service_account.Credentials.from_service_account_info(creds_dict)
+db = firestore.Client(credentials=creds, project=FIREBASE_PROJECT_ID)
 # ================== CONFIG ==================
 FIREBASE_PROJECT_ID = "ud-internal-ops"
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")  # Put your key in .env

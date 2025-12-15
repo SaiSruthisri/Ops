@@ -28,6 +28,8 @@ KB_OPTIONS = {
     "Client – Blueflute": "client_blueflute",
     "Client – Vibrant Living": "client_vibrant_living",
 }
+DEFAULT_MASTER_KB = "master_onboarding"
+
 
 creds_json = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON")
 creds_dict = json.loads(creds_json)
@@ -52,9 +54,9 @@ def get_doc_content(doc_id: str) -> str:
     return f"===== STATIC CONTENT =====\n{static}\n\n===== USER UPDATES =====\n{updates}"
 
 def get_combined_knowledge(active_doc: str) -> str:
-    if active_doc == "master_ud":
-        return get_doc_content("master_ud")
-    master = get_doc_content("master_ud")
+    if active_doc == DEFAULT_MASTER_KB:
+        return get_doc_content(DEFAULT_MASTER_KB)
+    master = get_doc_content(DEFAULT_MASTER_KB)
     client = get_doc_content(active_doc)
     return f"===== MASTER UD =====\n{master}\n\n===== CLIENT SPECIFIC =====\n{client}"
 
@@ -68,8 +70,8 @@ def append_user_update(doc_id: str, user_fact: str):
     doc_ref.set({"user_updates": ArrayUnion([update_block])}, merge=True)
 
 def handle_kb_write(active_doc: str, fact: str):
-    append_user_update("master_ud", fact)
-    if active_doc != "master_ud":
+    append_user_update(DEFAULT_MASTER_KB, fact)
+    if active_doc != DEFAULT_MASTER_KB:
         append_user_update(active_doc, fact)
 
 def ask_gemini(question, knowledge):
@@ -328,7 +330,7 @@ def index():
 def ask():
     data = request.get_json()
     question = data.get("question")
-    active_kb = data.get("active_kb", "master_ud")
+    active_kb = data.get("active_kb", DEFAULT_MASTER_KB)
     
     if re.match(r"(?i)^new\s*:", question):
         fact = re.sub(r"(?i)^new\s*:", "", question).strip()

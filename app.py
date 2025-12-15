@@ -8,18 +8,15 @@ from google.cloud import firestore
 from google.cloud.firestore import ArrayUnion
 from datetime import datetime
 from dotenv import load_dotenv
+import google.auth
+from google.oauth2 import service_account
 
 # ================== ENV SETUP ==================
 # load_dotenv()
 # GOOGLE_CREDS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_CREDS
-import google.auth
-from google.oauth2 import service_account
 
-creds_json = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON")
-creds_dict = json.loads(creds_json)
-creds = service_account.Credentials.from_service_account_info(creds_dict)
-db = firestore.Client(credentials=creds, project=FIREBASE_PROJECT_ID)
+
 # ================== CONFIG ==================
 FIREBASE_PROJECT_ID = "ud-internal-ops"
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")  # Put your key in .env
@@ -32,6 +29,10 @@ KB_OPTIONS = {
     "Client – Vibrant Living": "client_vibrant_living",
 }
 
+creds_json = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON")
+creds_dict = json.loads(creds_json)
+creds = service_account.Credentials.from_service_account_info(creds_dict)
+db = firestore.Client(credentials=creds, project=FIREBASE_PROJECT_ID)
 # ================== FIRESTORE ==================
 db = firestore.Client(project=FIREBASE_PROJECT_ID)
 
